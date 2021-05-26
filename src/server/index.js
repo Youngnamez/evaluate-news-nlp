@@ -4,10 +4,12 @@ const mockAPIResponse = require('./mockAPI.js')
 const dotenv = require('dotenv')
 const cors = require('cors');
 const fetch = require("node-fetch");
+const bodyParser = require("body-parser")
 
 const app = express()
 app.use(cors())
 app.use(express.static('dist')) 
+app.use(bodyParser.json())
 
 dotenv.config();
 
@@ -39,8 +41,9 @@ app.post('/getAPIData', function (req, res) {
     console.log("Received body from formHandler")
     console.log(req.body)
 
-    getDataFromMeaningCloud(apiKey, req.body)
-    .then(function (res) {
+    getDataFromMeaningCloud(createAPIUrl(apiKey, req.body.text))
+    .then(function (result) {
+        res.send(result)
         // console.log("Response from API")
         // console.log(res)
     })
@@ -55,18 +58,35 @@ app.post('/getAPIData', function (req, res) {
 })
 
 
-async function getDataFromMeaningCloud (apiKey, text) {
-    // console.log("Calling API with text: " + text)
-    const response = await fetch("https://api.meaningcloud.com/sentiment-2.1?lang=en&key=" + apiKey + "&txt=" + text);
+async function getDataFromMeaningCloud (path) {
+    console.log("Calling API with url: " + path)
+    const response = await fetch(path);
 
     try {
-        const newData = await response.json();
-        // console.log("API Response is ");
-        // console.log(newData);
-        return newData;
+        const data = await response.json();
+        console.log("API Response is ");
+        console.log(data);
+
+        const apiResponse = {
+            model: data.model,
+            score_tag: data.score_tag,
+            agreement: data.agreement,
+            subjectivity: data.subjectivity,
+            confidence: data.confidence,
+            irony: data.irony,
+            sentence_list: data.sentence_list,
+            sentimented_entity_list: data.sentimented_entity_list,
+            sentimented_concept_list: data.sentimented_concept_list
+        }
+        return apiResponse;
     }
 
     catch(error) {
         console.log("error", error);
     }
 }
+
+function createAPIUrl(apiKey, text) {
+    return "https://api.meaningcloud.com/sentiment-2.1?lang=en&key=" + apiKey + "&txt=" + text;
+}
+
