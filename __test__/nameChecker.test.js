@@ -1,9 +1,11 @@
 // Import the js file to test
-import { checkForName } from "../src/client/js/nameChecker"
+import { regexCheck } from "../src/client/js/nameChecker"
 
 describe ("Testing the nameChecker functionality", () => {
     test("Testing nameChecker()", () => {
     
-        expect(checkForName).toBeDefined();
+        expect(regexCheck).toBeDefined();
+        expect(regexCheck("HI")).toEqual(true);
+        expect(regexCheck("0129HI1223")).toEqual(false);
     })
 })

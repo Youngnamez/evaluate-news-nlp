@@ -3,31 +3,22 @@ function handleSubmit(event) {
 
     // check what text was put into the form field
     let formText = document.getElementById('name').value
-    Client.checkForName(formText)
-
     console.log("::: Form Submitted :::")
 
     console.log("Form text is " + formText)
+    if (Client.checkForName(formText)) {
+        callAPI(formText)
+        .then(function (res) {
+            console.log("URL is now ")
+            console.log(res)
+            res => res.json()
+            console.log(res)
+        })
+    }
 
-    callAPI(formText)
-    .then(function (res) {
-        console.log("URL is now ")
-        console.log(res)
-        res => res.json()
-        console.log(res)
-    })
-
-
-    // fetch('http://localhost:8081/getAPIData')
-    // .then( function(res) {
-    //     console.log("API key");
-    //     console.log(res)
-    //     console.log(res.apiKey)
-    //     res => res.json()
-    // })
-    // .then(function(res) {
-    //     // document.getElementById('results').innerHTML = res.message
-    // })
+   else {
+    alert("Invalid user input provided.");
+   }
 }
 
 async function callAPI(formText) {

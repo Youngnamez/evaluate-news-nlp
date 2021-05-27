@@ -1,3 +1,4 @@
+
 function checkForName(inputText) {
     console.log("::: Running checkForName :::", inputText);
     let names = [
@@ -11,6 +12,16 @@ function checkForName(inputText) {
     if(names.includes(inputText)) {
         alert("Welcome, Captain!")
     }
+
+    if (regexCheck(inputText) == false) {
+        return false;
+    }
+    return true;
 }
 
-export { checkForName }
+function regexCheck(text) {
+    // Found helpful regex help here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+    return new RegExp('^[a-zA-Z]+$').test(text);
+}
+
+export { checkForName, regexCheck }
